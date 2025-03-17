@@ -1,0 +1,44 @@
+// 1. Порахувати кількість студентів які вивчають більше ніж один предмет
+db.students.aggregate([
+    {
+        $addFields:{
+            countOfLessons:{$size:'$lessons'}
+        }
+    },
+    {
+        $match:{
+            countOfLessons:{$gt:1}
+        }
+    },
+    {
+        $count:"more then 1 lesson"
+    }
+])
+
+// 2. Порахувати скільки студентів вивчає basic
+db.students.find({lessons:'basic'}).count()
+
+// 3. порахувати для кожного предмету скільки студентів вивчають його
+db.students.aggregate([
+    {
+        $unwind: "$lessons"
+    },
+    {
+        $group: {
+            _id: "$lessons",
+            count: { $sum: 1 }
+        }
+    }
+])
+// 4. знайти самий популярний предмет
+db.students.aggregate([
+    { $unwind: "$lessons" },
+    {
+        $group: {
+            _id: "$lessons",
+            count: { $sum: 1 }
+        }
+    },
+    { $sort: { count: -1 } },
+    { $limit: 1 }
+])
