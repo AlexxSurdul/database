@@ -1,4 +1,4 @@
-use lkjh;
+use useralexx;
 select distinct name, age from users;
 
 select avg(age), sum(age) from users;
@@ -9,8 +9,8 @@ select sum(age) from users;
 
 select id, price, price*2 as doublePrice from cars;
 
-select concat('My name is ',name, ' I`m ', age, 'gender - ',gender) as strings from users;
-select * from users where concat('My name is ',name, ' I`m ', age, 'gender - ',gender)='My name is Max I`m 16gender - male';
+select concat('My name is ',name, ' I`m ', age, 'gender - ', gender) as strings from users;
+select * from users where concat('My name is ',name, ' I`m ', age, 'gender - ', gender)='My name is Max I`m 16gender - male';
 
 select * from users where name < 'max';
 
@@ -29,8 +29,8 @@ join client  on client.idClient = application.Client_idClient
 where FirstName='Roman';
 
 select a.*, client.FirstName, d.DepartmentCity from client
-join lkjh.application a on client.idClient = a.Client_idClient
-join lkjh.department d on d.idDepartment = client.Department_idDepartment;
+join useralexx.application a on client.idClient = a.Client_idClient
+join useralexx.department d on d.idDepartment = client.Department_idDepartment;
 
 create table cities(
   id int primary key auto_increment,
@@ -42,7 +42,7 @@ create table users(
   name varchar(20) not null ,
   age int not null ,
   city_id int null ,
-  foreign key (city_id) references cities(id)
+  foreign key (city_id) references cities(id)  #foreign key - ключ з посилання на іншу таблицю, ним ми зв'язуємо 2 таблиці
 );
 
 

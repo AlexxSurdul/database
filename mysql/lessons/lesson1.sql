@@ -57,7 +57,7 @@ select count(*), gender from users where age>25 group by gender having count(*)>
 drop table users; #спочатку видаляємо наявну таблицю з такою ж назвою, я не буду поки дропати і створю нову
 
 create table users1(
-                      id int primary key auto_increment,
+                      id int primary key auto_increment,    #int - вказуємо що це число, primary key - головний ключ таблиці, auto_increment - автоматична генерація числа
                       name varchar(20) not null ,
                       age int not null,
                       gender varchar(6) not null
@@ -65,9 +65,9 @@ create table users1(
 
 insert into users1 (name, age, gender) values ('Kiril', 15, 'female');
 
-select * from users1;
+select * from users;
 select id, name from users;
 
-update users1 set name='Orest' where id=2;
+update users set name='Orest' where id=2;
 
-delete from users1 where id in (1,3,4)
+delete from users where id in (1,3,4)
