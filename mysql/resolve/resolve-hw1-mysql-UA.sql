@@ -28,7 +28,5 @@ select count(*) as count, model from cars group by model order by count desc lim
 select * from cars where model like '_a%a_';
 # знайти всі машини назва моделі яких більше за 8 символів
 select * from cars where length(model)>8;
-
-
 # ***знайти машини ціна котрих більше ніж ціна середнього арифметичного всіх машин
 select * from cars where price > (select avg(price) from cars)
