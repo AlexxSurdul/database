@@ -1,0 +1,111 @@
+use test
+
+db.users.find() - пошук в бд всіх
+
+db.users.insertOne({carModel:'BMW', year:200}) - додавання одного, ще є insertMany для багатьох
+
+db.users.find({_id:ObjectId('66e8610553f9506ecef59b44')}) - пошук по ID, який тут є об'єктом "_id:ObjectId"
+
+ db.users.find(                              - можна шукати за кількома характеристиками
+     {gender:'female', rating:4},
+     {_id:1, name:1}                         - 1 це значення true
+    {name:0}
+ )
+
+db.users.find({
+    $and:[                                  - пошук через оператор "і" - $and
+        {rating:2},
+        {gender:'female'}
+    ]
+})
+
+db.users.find({
+    $or:[                                   - пошук через оператор "або" - $or
+        {rating:2},
+        {gender:'female'}
+    ]
+})
+
+db.users.find({
+    age:{
+        $in:[12, 25,33,48,16,18]            - пошук даних, які входять в масив - $in
+    }
+})
+db.users.find({
+    age:{
+        $nin:[12, 25,33,48,16,18]           - дані не входять в цей масив - $nin
+    }
+})
+
+db.users.find({
+    rating:{$gt:2}                          - $gt - більше ніж
+})
+db.users.find({
+    rating:{$gte:2}                         - $gte - більше рівне
+})
+
+db.users.find({
+    rating:{$lt:2}                          - $lt - менше ніж
+})
+db.users.find({
+    rating:{$lte:2}                         - $lte - менше рівне
+})
+
+db.users.find({
+    rating:{$ne:3}                          - $ne - не рівне
+})
+
+db.users.find({
+    rating:{$eq:3}                          - $eq - рівне
+})
+
+db.users.find({rating:3})
+
+db.users.find({name:'Kira'})
+
+db.users.find({name:/^a/i})                 - пошук за допомогою регулярних виразів
+db.users.find({name:/a$/i})                 - початок і кінець виразу позначають /.../
+db.users.find({name:/.{2}t/i})              - і в кінці прибирає чутливість до реєстру
+db.users.find({name:/^k.*a$/i}) - ^ початок, $кінець рядка, . один символ, .{3} - символ 3 рази, * будь яка к-ть від 0 і більше
+db.users.find({name:/v/i})
+
+db.users.find().sort({rating:1})            - сортування від більшого до меншого
+db.users.find().sort({rating:-1})           - сортування в зворотному напрямку
+db.users.find().sort({rating:-1, name:-1}).limit(2).skip(4) - limit(2)- перших 2 значення, skip(4) - пропустити перші 4
+
+
+db.users.find()
+
+db.users.updateOne(                             - оновлення одного
+    {_id:ObjectId('66e8610553f9506ecef59b3d')},
+    {$set:{rating2:8}}
+)
+
+db.users.updateOne(
+    {_id:ObjectId('66e8610553f9506ecef59b3d')},
+    {$unset:{rating:1}}
+)
+
+db.users.updateMany(                            - оновлення багатьох
+    {gender:'male'},
+    {$set:{gender:'animal'}}
+)
+
+db.users.find({"address.house":{$gt:20}})
+
+db.users.find({parents:'Masha'})                - пошук по полях зі значенням у вигляді масиву
+
+db.users.find({parents:{$size:1}})
+db.users.find({parents:{$exists:0}})
+
+db.users.find({_id:ObjectId('66e8610553f9506ecef59b44')})
+
+db.users.updateOne(
+    {_id:ObjectId('66e8610553f9506ecef59b44')},
+    {$push:{parents:'Kamila'}}
+)
+
+
+db.users.deleteOne(                             - видалення одного або багатьох
+    {_id:ObjectId('66e8620953f9506ecef59b47')}
+)

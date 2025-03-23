@@ -1,0 +1,130 @@
+db.students.find()
+db.teacher.find()
+
+db.teacher.aggregate([     - агрегатні функції визначають мін/макс значення, суми, середнє значення і підраховує к-ть
+    {
+        $group:{           - групування
+            _id:'$lesson',
+            minPayment:{$min:'$payment'},
+            maxPayment:{$max:'$payment'},
+            avgPayment:{$avg:'$payment'},
+            sumPayment:{$sum:'$payment'},   - сумування значень
+            countOfTeachers:{$sum:1}        - підрахунок к-ті, 1 це множник на який буде помножено значення після підрахунку
+        }
+    },
+    {
+        $match:{
+            sumPayment:{$gt:3000}
+        }
+    },
+    {
+        $sort:{maxPayment:-1}              - сортування
+    },
+    {
+        $project:{                         - $project дозволяє вмикати і вимикати поля
+            myLesson:'$_id',
+            minPayment:1,
+            maxPayment:1,
+            avgPayment:1,
+            sumPayment:1,
+            countOfTeachers:1,
+            _id:0
+        }
+    },
+    {
+        $skip:2                         - дозволяє пропустити зазначену к-ть значень
+    },
+    {
+        $limit:2                        - виводить зазначену к-ть значень
+    },
+])
+
+
+db.teacher.aggregate([
+    {
+        $match:{                        - $match аналогічна функція find, але всередині aggregate
+            class_curator:{$gt:5}
+        }
+    },
+    {
+        $lookup:{                       - з'єднування таблиць
+            from:'students',            - з якої таблиці взяти поле
+            localField:'class_curator', - яке наше поле потрібно взяти
+            foreignField:'class',       - до якого поля його приєднати в іншій таблиці
+            as:'myStudents'             - як назвати з'єднане поле/масив
+        }
+    },
+])
+
+
+db.teacher.aggregate([
+    {
+        $lookup:{
+            from:'students',
+            localField:'class_curator',
+            foreignField:'class',
+            as:'myStudents'
+        }
+    },
+    {
+        $unwind:'$myStudents'            - $unwind розбиває масив на об'єкти, тобто для кожного значення в масиві будує новий об'єкт де таке значення єдине
+    },
+    {
+        $unwind:'$myStudents.parents'
+    },
+    {
+        $match:{
+            'myStudents.parents.profession':'doctor'
+        }
+    },
+    {
+        $count:'doctorCount'            - підрахунок
+    }
+])
+
+
+db.students.aggregate([
+    {
+        $addFields:{
+            nameLength:{$strLenCP:'$name'}
+        }
+    },
+    {
+        $match:{
+            nameLength:{$gt:6}
+        }
+    },
+    {
+        $project:{
+            nameLength:0
+        }
+    }
+])
+
+db.students.aggregate([
+    {
+        $addFields:{
+            countOfParents:{$cond:{if:{$isArray:'$parents'}, then:{$size:'$parents'}, else:0}}
+        }
+    },
+    {
+        $group:{
+            _id:'',
+            sum:{$sum:'$countOfParents'}
+        }
+    },
+    {
+        $project:{
+            _id:0
+        }
+    }
+])
+
+db.students.aggregate([
+    {
+        $project:{
+            name:0
+        }
+    }
+])
+
